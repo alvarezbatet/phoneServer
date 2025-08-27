@@ -25,32 +25,25 @@ public class ServerToImageApp extends NanoHTTPD {
 
                 // Handle multipart/form-data (image/audio)
                 if (contentType != null && contentType.startsWith("multipart/form-data")) {
-                    Map<String, String> files = new java.util.HashMap<>();
-                    session.parseBody(files);
+                    if (contentType != null && contentType.equals("application/octet-stream")) {
+    File outFile = new File("uploaded_file_" + System.currentTimeMillis() + ".bin");
 
-                    for (Map.Entry<String, String> entry : files.entrySet()) {
-                        String tempFile = entry.getValue();
-                        String filename = "uploaded_file_" + System.currentTimeMillis();
+    try (OutputStream out = new FileOutputStream(outFile);
+         InputStream in = session.getInputStream()) {
 
-                        if (contentType.contains("image")) {
-                            filename += ".jpg";
-                        } else if (contentType.contains("mpeg")) {
-                            filename += ".mp3";
-                        } else {
-                            filename += ".dat";
-                        }
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
+        }
 
-                        File dest = new File(filename);
-                        try (InputStream in = new FileInputStream(tempFile);
-                             OutputStream out = new FileOutputStream(dest)) {
-                            byte[] buffer = new byte[4096];
-                            int bytesRead;
-                            while ((bytesRead = in.read(buffer)) != -1) {
-                                out.write(buffer, 0, bytesRead);
-                            }
-                        }
-
-                        System.out.println("File uploaded: " + dest.getAbsolutePath());
+        System.out.println("Binary file saved: " + outFile.getAbsolutePath());
+        return newFixedLengthResponse("Binary file uploaded successfully.");
+    } catch (IOException e) {
+        e.printStackTrace();
+        return newFixedLengthResponse("Error writing file.");
+    }
+}
                     }
 
                     return newFixedLengthResponse("File uploaded successfully.");
