@@ -25,28 +25,24 @@ public class ServerToImageApp extends NanoHTTPD {
 
                 // Handle multipart/form-data (image/audio)
                 if (contentType != null && contentType.startsWith("multipart/form-data")) {
-                    if (contentType != null && contentType.equals("application/octet-stream")) {
-    File outFile = new File("uploaded_file_" + System.currentTimeMillis() + ".bin");
 
-    try (OutputStream out = new FileOutputStream(outFile);
-         InputStream in = session.getInputStream()) {
-
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = in.read(buffer)) != -1) {
-            out.write(buffer, 0, bytesRead);
-        }
-
-        System.out.println("Binary file saved: " + outFile.getAbsolutePath());
-        return newFixedLengthResponse("Binary file uploaded successfully.");
-    } catch (IOException e) {
-        e.printStackTrace();
-        return newFixedLengthResponse("Error writing file.");
-    }
-}
-                    }
-
-                    return newFixedLengthResponse("File uploaded successfully.");
+                        File outFile = new File("uploaded_file_" + System.currentTimeMillis() + ".jpg");
+                    
+                        try (OutputStream out = new FileOutputStream(outFile);
+                             InputStream in = session.getInputStream()) {
+                    
+                            byte[] buffer = new byte[4096];
+                            int bytesRead;
+                            while ((bytesRead = in.read(buffer)) != -1) {
+                                out.write(buffer, 0, bytesRead);
+                            }
+                    
+                            System.out.println("Binary file saved: " + outFile.getAbsolutePath());
+                            return newFixedLengthResponse("Binary file uploaded successfully.");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return newFixedLengthResponse("Error writing file.");
+                        }
                 }
 
                 // Handle plain text
