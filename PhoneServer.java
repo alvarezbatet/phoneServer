@@ -83,7 +83,7 @@ public class ServerToImageApp extends NanoHTTPD {
         ServerToImageApp server = new ServerToImageApp(port);
 
         try {
-            server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            server.start(10_000, false);
             System.out.println("Server started on port " + port);
             System.out.println("Endpoints: /send (POST), /receive (GET)");
 
