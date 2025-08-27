@@ -57,12 +57,19 @@ public class ServerToImageApp extends NanoHTTPD {
                 }
 
                 // Handle plain text
-                if (contentType != null && contentType.equals("text/plain")) {
-                    InputStream is = session.getInputStream();
-                    lastMessage = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                    System.out.println("Received text: " + lastMessage);
-                    return newFixedLengthResponse("Text received.");
-                }
+if (contentType != null && contentType.equals("text/plain")) {
+    Map<String, String> files = new java.util.HashMap<>();
+    session.parseBody(files);
+
+    String postData = files.get("postData");
+    if (postData != null) {
+        lastMessage = postData;
+        System.out.println("Received text: " + lastMessage);
+        return newFixedLengthResponse("Text received.");
+    }
+
+    return newFixedLengthResponse("No data received.");
+}
 
                 return newFixedLengthResponse("Unsupported Content-Type.");
             }
