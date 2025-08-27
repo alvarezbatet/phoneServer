@@ -83,7 +83,7 @@ public class ServerToImageApp extends NanoHTTPD {
     }
 
     public static void main(String[] args) {
-        int port = 8080; // Use non-privileged port on Termux
+        int port = 8888; // Use non-privileged port on Termux
         ServerToImageApp server = new ServerToImageApp(port);
 
         try {
